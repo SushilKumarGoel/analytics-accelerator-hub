@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Accelerator Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            background: #0a0e1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation .line {
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            background: rgba(78, 205, 196, 0.03);
+            overflow: hidden;
+        }
+
+        .bg-animation .line::after {
+            content: '';
+            display: block;
+            position: absolute;
+            height: 15vh;
+            width: 100%;
+            top: -50%;
+            left: 0;
+            background: linear-gradient(to bottom, rgba(78, 205, 196, 0) 0%, rgba(78, 205, 196, 0.3) 75%, rgba(78, 205, 196, 0) 100%);
+            animation: drop 7s 0s infinite;
+            animation-fill-mode: forwards;
+            animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
+        }
+
+        .bg-animation .line:nth-child(1) { left: 10%; }
+        .bg-animation .line:nth-child(1)::after { animation-delay: 2s; }
+        .bg-animation .line:nth-child(2) { left: 25%; }
+        .bg-animation .line:nth-child(2)::after { animation-delay: 3.5s; }
+        .bg-animation .line:nth-child(3) { left: 40%; }
+        .bg-animation .line:nth-child(3)::after { animation-delay: 1.5s; }
+        .bg-animation .line:nth-child(4) { left: 55%; }
+        .bg-animation .line:nth-child(4)::after { animation-delay: 4.5s; }
+        .bg-animation .line:nth-child(5) { left: 70%; }
+        .bg-animation .line:nth-child(5)::after { animation-delay: 2.5s; }
+        .bg-animation .line:nth-child(6) { left: 85%; }
+        .bg-animation .line:nth-child(6)::after { animation-delay: 5.5s; }
+
+        @keyframes drop {
+            0% { top: -50%; }
+            100% { top: 110%; }
+        }
+
+        /* Header */
+        .hero {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 80px 20px 60px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            color: #4ecdc4;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #4ecdc4 50%, #44a08d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: #8899aa;
+            max-width: 700px;
+            margin: 0 auto 20px;
+            line-height: 1.7;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            animation: fadeInUp 1.2s ease;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4ecdc4;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #667788;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Flow Diagram */
+        .flow-section {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            animation: fadeInUp 1.4s ease;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(78, 205, 196, 0.1);
+            border-radius: 16px;
+            padding: 30px 20px;
+        }
+
+        .flow-node {
+            background: rgba(78, 205, 196, 0.08);
+            border: 1px solid rgba(78, 205, 196, 0.25);
+            border-radius: 10px;
+            padding: 14px 20px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-node-title {
+            font-size: 0.7rem;
+            color: #4ecdc4;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .flow-node-value {
+            font-size: 0.95rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .flow-arrow {
+            color: #4ecdc4;
+            font-size: 1.4rem;
+            opacity: 0.6;
+        }
+
+        /* Cards Grid */
+        .modules-section {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: #667788;
+            font-size: 0.95rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(78, 205, 196, 0.3);
+            background: rgba(78, 205, 196, 0.04);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .card-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-live {
+            background: rgba(78, 205, 196, 0.15);
+            color: #4ecdc4;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .status-new {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .status-soon {
+            background: rgba(255, 255, 255, 0.05);
+            color: #556677;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #8899aa;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card-tag {
+            font-size: 0.72rem;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #8899aa;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card.disabled:hover {
+            transform: none;
+            border-color: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: none;
+        }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #556677;
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: #4ecdc4;
+            text-decoration: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero-stats { gap: 20px; flex-wrap: wrap; }
+            .stat-number { font-size: 1.5rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .flow-diagram { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background lines -->
+    <div class="bg-animation">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">SAP Analytics & Migration Toolkit</div>
+        <h1>Analytics Accelerator Hub</h1>
+        <p>
+            Your one-stop reference for SAP ECC → S/4HANA brownfield migration.
+            From table lineage to CDS view extraction to hyperscaler landing — everything your team needs, in one place.
+        </p>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-number">5</div>
+                <div class="stat-label">SAP Modules</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">65+</div>
+                <div class="stat-label">Table Mappings</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Cloud Targets</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Lineage Layers</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flow Diagram -->
+    <section class="flow-section">
+        <div class="flow-diagram">
+            <div class="flow-node">
+                <div class="flow-node-title">Source</div>
+                <div class="flow-node-value">ECC Tables</div>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node">
+                <div class="flow-node-title">Converted</div>
+                <div class="flow-node-value">S/4HANA Tables</div>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node">
+                <div class="flow-node-title">Extraction</div>
+                <div class="flow-node-value">CDS Views</div>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node">
+                <div class="flow-node-title">Target</div>
+                <div class="flow-node-value">Azure / Snowflake</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Grid -->
+    <section class="modules-section">
+        <div class="section-header">
+            <h2>Accelerator Modules</h2>
+            <p>Click any active module to launch it. More modules are being built progressively.</p>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Card 1: ECC to S4 Lineage (NEW) -->
+            <a href="ecc-s4-lineage.html" class="card">
+                <span class="card-status status-new">New</span>
+                <div class="card-icon">🔄</div>
+                <h3>ECC → S/4 → CDS → Cloud Lineage</h3>
+                <p>Three-tier mapping from ECC tables through S/4HANA to CDS views, with extraction recommendations for Azure Data Lake and Snowflake.</p>
+                <div class="card-tags">
+                    <span class="card-tag">FI</span>
+                    <span class="card-tag">CO</span>
+                    <span class="card-tag">SD</span>
+                    <span class="card-tag">MM</span>
+                    <span class="card-tag">PP</span>
+                    <span class="card-tag">Azure ADLS</span>
+                    <span class="card-tag">Snowflake</span>
+                </div>
+            </a>
+
+            <!-- Card 2: CDS View Reference (EXISTING) -->
+            <a href="cds-reference.html" class="card">
+                <span class="card-status status-live">Live</span>
+                <div class="card-icon">📊</div>
+                <h3>CDS View Reference</h3>
+                <p>Interactive catalog of released SAP CDS views with delta capability, release status, and underlying table details. Search, filter, and export.</p>
+                <div class="card-tags">
+                    <span class="card-tag">49+ Views</span>
+                    <span class="card-tag">Searchable</span>
+                    <span class="card-tag">CSV Export</span>
+                    <span class="card-tag">Delta Status</span>
+                </div>
+            </a>
+
+            <!-- Card 3: Field-Level Lineage (Coming Soon) -->
+            <div class="card disabled">
+                <span class="card-status status-soon">Phase 2</span>
+                <div class="card-icon">🧬</div>
+                <h3>Field-Level Lineage</h3>
+                <p>Drill into any CDS view to see field-by-field mapping back to S/4 and ECC tables. Data types, transformations, and naming conventions included.</p>
+                <div class="card-tags">
+                    <span class="card-tag">Field Mapping</span>
+                    <span class="card-tag">Data Types</span>
+                    <span class="card-tag">ECC ↔ S/4 ↔ CDS</span>
+                </div>
+            </div>
+
+            <!-- Card 4: T-Code to Fiori (Coming Soon) -->
+            <div class="card disabled">
+                <span class="card-status status-soon">Coming Soon</span>
+                <div class="card-icon">📱</div>
+                <h3>T-Code → Fiori App Map</h3>
+                <p>Find the Fiori app replacement for any classic ECC transaction code. Includes app ID, SAP Fiori library link, and role requirements.</p>
+                <div class="card-tags">
+                    <span class="card-tag">Transaction Codes</span>
+                    <span class="card-tag">Fiori Apps</span>
+                    <span class="card-tag">Role Mapping</span>
+                </div>
+            </div>
+
+            <!-- Card 5: Extraction Planner (Coming Soon) -->
+            <div class="card disabled">
+                <span class="card-status status-soon">Coming Soon</span>
+                <div class="card-icon">🚀</div>
+                <h3>Cloud Extraction Planner</h3>
+                <p>Select your reporting requirements and get a recommended extraction strategy — ODP, SLT, OData, or batch — with pipeline architecture patterns.</p>
+                <div class="card-tags">
+                    <span class="card-tag">ODP</span>
+                    <span class="card-tag">SLT</span>
+                    <span class="card-tag">ADF Pipelines</span>
+                    <span class="card-tag">Architecture</span>
+                </div>
+            </div>
+
+            <!-- Card 6: Report Migration Tracker (Coming Soon) -->
+            <div class="card disabled">
+                <span class="card-status status-soon">Coming Soon</span>
+                <div class="card-icon">📋</div>
+                <h3>Report Migration Tracker</h3>
+                <p>Track the status of BW query and ABAP report migration. Assignment, status, blockers, and go-live readiness at a glance.</p>
+                <div class="card-tags">
+                    <span class="card-tag">BW Queries</span>
+                    <span class="card-tag">ABAP Reports</span>
+                    <span class="card-tag">Status Tracking</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Analytics Accelerator Hub • Brownfield Migration Toolkit • Built for SAP S/4HANA Conversions</p>
+        <p style="margin-top: 8px;">ECC → S/4HANA → CDS → Azure Data Lake & Snowflake</p>
+        <p style="margin-top: 16px; font-size: 0.75rem; color: #445566;">
+            Data is maintained in CSV files — editable in Excel, version controlled in Git.
+        </p>
+    </footer>
+</body>
+</html>
