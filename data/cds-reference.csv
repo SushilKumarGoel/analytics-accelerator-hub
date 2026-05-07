@@ -1,0 +1,63 @@
+cdsViewName,description,module,category,underlyingTable,delta,type,odata,s4Release,notes
+I_JournalEntry,Universal Journal Entry Header,FI,Transactional,ACDOCA,Yes,Transactional,Yes,1709,Consolidated header for all financial posting. Critical for FI migration.
+I_JournalEntryItem,Journal Entry Line Items,FI,Transactional,ACDOCA,Yes,Transactional,Yes,1709,Line item details with cost center and profit center dimensions.
+I_GLAccountLineItems,G/L Account Line Item Postings,FI,Transactional,ACDOCA,Yes,Transactional,Yes,1709,Detailed postings by account. Used for detailed reconciliations.
+I_GLAccountMasterData,Chart of Accounts Master,FI,Master Data,SKA1,No,Standard,Yes,1709,Chart of accounts reference. Slow-changing dimension.
+I_GLAccountBalance,G/L Account Balances,FI,Analytical,ACDOCA,Yes,Analytical,Yes,1709,Period balances for financial reporting. Delta-enabled for real-time BI.
+I_CompanyCode,Company Code Master Data,FI,Master Data,T001,No,Standard,No,1709,Organizational unit setup. Reference data.
+I_Conditions,Pricing Conditions,SD,Transactional,KONV,Yes,Transactional,Yes,1909,Condition records for sales orders. Used in pricing engine.
+I_SalesOrderHeader,Sales Order Header,SD,Transactional,VBAK,Yes,Transactional,Yes,1709,Customer order header with delivery and billing terms.
+I_SalesOrderItem,Sales Order Item,SD,Transactional,VBAP,Yes,Transactional,Yes,1709,Order line items with material, quantity, and price.
+I_SalesOrderDeliveryData,Sales Order Delivery Data,SD,Configuration,VBKD,Yes,Standard,Yes,1809,Delivery scheduling and transportation data.
+I_Product,Material Master,MM,Master Data,MARA,Yes,Master Data,Yes,1709,Product/material master data. Critical reference table.
+I_ProductPlant,Product Plant Data,MM,Master Data,MARC,Yes,Master Data,Yes,1709,Plant-specific material data (stock, procurement settings).
+I_BOM,Bill of Materials Header,MM,Master Data,MAST,No,Standard,No,1709,BOM structure headers. Slow-changing dimension.
+I_BOMItem,BOM Line Items,MM,Master Data,STPO,No,Standard,No,1709,BOM component items and quantities.
+I_PurchaseOrderHeader,Purchase Order Header,MM,Transactional,EKKO,Yes,Transactional,Yes,1709,PO header with vendor and terms.
+I_PurchaseOrderItem,Purchase Order Item,MM,Transactional,EKPO,Yes,Transactional,Yes,1709,PO line items with material and quantity.
+I_InboundDeliveryDocHeader,Material Document Header,MM,Transactional,MKPF,Yes,Transactional,Yes,1709,Goods receipt document header.
+I_InboundDeliveryDocItem,Material Document Item,MM,Transactional,MSEG,Yes,Transactional,Yes,1709,Goods receipt line items with stock posting.
+I_Reservation,Reservation/Dependent Demand,MM,Transactional,RESB,Yes,Transactional,Yes,1709,Supply planning reservations. Used in MRP.
+I_SupplierInvoiceHeader,Supplier Invoice Header,MM,Transactional,ACDOCA,Yes,Transactional,Yes,1909,Invoice header (merged from LFKO in S/4).
+I_SupplierInvoiceItem,Supplier Invoice Item,MM,Transactional,ACDOCA,Yes,Transactional,Yes,1909,Invoice line items (merged from LFPO in S/4).
+I_ManufacturingOrder,Manufacturing Order Header,PP,Transactional,AFKO,Yes,Transactional,Yes,1709,Production order header with scheduling data.
+I_ManufacturingOrderItem,Manufacturing Order Item,PP,Transactional,AFPO,Yes,Transactional,Yes,1709,Production order line items and routings.
+I_PlannedOrder,Planned Orders,PP,Transactional,PLPO,Yes,Transactional,Yes,1709,MRP generated planned orders for materials.
+I_ManufacturingOperations,Manufacturing Operations,PP,Transactional,AUFM,Yes,Transactional,Yes,1709,Production order routing and operation data.
+I_ReservationExtended,Reservation Extended Data,PP,Transactional,RESEV,Yes,Transactional,Yes,1809,Extended reservation attributes for detailed planning.
+I_PurchaseRequisitionHeader,Purchase Requisition Header,MM,Transactional,EBAN,Yes,Transactional,Yes,1709,PR header from requisitioner.
+I_PurchaseRequisitionItem,Purchase Requisition Item,MM,Transactional,EBAP,Yes,Transactional,Yes,1709,PR line items with material and quantity.
+I_GLAccountMasterData,GL Account Master Data,FI,Master Data,SKA1,No,Standard,No,1709,Chart of accounts definition and attributes.
+I_GLAccountText,GL Account Text/Descriptions,FI,Master Data,SKAT,No,Standard,No,1709,Account names and descriptions by language.
+I_GLAccountBalance,GL Account Balances,FI,Analytical,ACDOCA,Yes,Analytical,Yes,1709,Period end balances for GL accounts.
+I_Plant,Plants/Locations,MM,Master Data,T001L,No,Standard,No,1709,Plant organizational unit master data.
+I_Warehouse,Warehouse Master,MM,Master Data,T001W,No,Standard,No,1709,Warehouse/storage location definitions.
+I_SupplierAccountMaster,Supplier Account Master,MM,Master Data,MSKK,No,Master Data,No,1709,Vendor master data and account status.
+I_CustomerAddress,Customer Address,SD,Master Data,KNVP,No,Standard,No,1709,Customer address book with multiple addresses per customer.
+I_CustomerAccountHeader,Customer Account Header,SD,Master Data,KNKA,No,Master Data,No,1709,Customer master data with account status.
+I_InternalOrderLineItems,Internal Order Line Items,CO,Transactional,COBRB,Yes,Transactional,Yes,1909,Cost object line items (deprecated COSP replacement).
+I_ProfitabilitySegment,Profitability Segment Results,CO,Analytical,ACDOCA,Yes,Analytical,Yes,1909,Profitability analysis with dimensions (replaced COPA).
+I_CostElement,Cost Elements,CO,Master Data,CEPC,No,Configuration,No,1709,Cost element definitions and hierarchies.
+I_CostCenterRules,Cost Center Posting Rules,CO,Configuration,COEJ,No,Configuration,No,1709,Posting rule configurations for cost centers.
+I_CostCenter,Cost Center Master,CO,Master Data,CSKS,No,Master Data,No,1709,Cost center definitions and hierarchies.
+I_CostObjectAllocation,Cost Object Allocations,CO,Transactional,CSLA,Yes,Transactional,Yes,1709,Allocation of costs to cost objects.
+I_GLAccountTypeMapping,GL Account Type Mapping,FI,Configuration,GLPCT,No,Configuration,No,1709,Configuration of GL account types for automatic posting.
+I_CurrencyConversion,Currency Conversion Rates,FI,Configuration,TCURR,Yes,Configuration,Yes,1709,Daily exchange rates for multi-currency operations.
+I_Country,Country Master Data,FI,Master Data,T005,No,Standard,No,1709,Country codes and definitions.
+I_UnitOfMeasure,Unit of Measure,MM,Master Data,T006,No,Standard,No,1709,Unit definitions and conversions.
+I_TimeSheet,Time Sheet Entries,PP,Transactional,TIMS,Yes,Transactional,Yes,1809,Employee time tracking for labor costing.
+I_DocumentFlow,Document Flow,SD,Configuration,VBFA,No,Standard,No,1709,Order-to-cash document linkage (OTC).
+I_DeliveryItem,Delivery Item,SD,Transactional,LIPS,Yes,Transactional,Yes,1709,Shipment line items with package details.
+I_DeliveryHeader,Delivery Header,SD,Transactional,LIKP,Yes,Transactional,Yes,1709,Shipment header with carrier and routing.
+I_BatchConsumption,Batch Consumption Records,MM,Transactional,RBCO,Yes,Transactional,Yes,1809,Lot/batch consumption for traceability.
+I_BatchMaster,Batch Master,MM,Master Data,CHVD,No,Master Data,No,1709,Batch/lot definitions and attributes.
+I_CostObjectLineItems,Cost Object Line Items,CO,Transactional,COBRB,Yes,Transactional,Yes,1909,Detailed cost object postings (WIP, orders).
+I_ProductCharacteristics,Product Characteristics,MM,Master Data,PCHQ,No,Master Data,No,1809,Product variant characteristics and values.
+I_CostObjectMaster,Cost Object Master,CO,Master Data,CKMLHD,No,Master Data,No,1709,Internal/external order master definitions.
+I_AccountsReceivable,Accounts Receivable Open,FI,Transactional,BSID,Yes,Transactional,Yes,1709,Open customer invoices and credit memos (A/R).
+I_AccountsPayable,Accounts Payable Open,FI,Transactional,BSIK,Yes,Transactional,Yes,1709,Open supplier invoices and debit memos (A/P).
+I_AccountsReceivableCleared,AR Cleared Items,FI,Analytical,ACDOCA,No,Analytical,No,2020,Archived A/R data. Use for historical reconciliations.
+I_AccountsPayableCleared,AP Cleared Items,FI,Analytical,ACDOCA,No,Analytical,No,2020,Archived A/P data. Use for historical reconciliations.
+I_BankMasterData,Bank Master Data,FI,Master Data,EBKK,No,Standard,No,1709,Bank details for cash management.
+I_POHistory,Purchase Order History,MM,Analytical,EKBE,No,Standard,No,1709,Historical PO data including receipts and invoices.
+I_SalesDocumentBusinessData,Sales Document Business Data,SD,Configuration,VBKD,Yes,Configuration,Yes,1809,Extended sales document attributes and data.
