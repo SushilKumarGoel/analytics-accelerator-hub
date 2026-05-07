@@ -53,6 +53,25 @@
         .nav-link:hover { background: rgba(78, 205, 196, 0.1); color: #ffffff; }
         .nav-link.active { background: rgba(78, 205, 196, 0.15); color: #4ecdc4; }
 
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 10px 24px;
+            font-size: 0.78rem;
+            color: #556677;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(15, 22, 36, 0.5);
+        }
+
+        .breadcrumb a {
+            color: #4ecdc4;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: #ffffff; }
+        .breadcrumb-sep { margin: 0 8px; opacity: 0.4; }
+        .breadcrumb-current { color: #8899aa; }
+
         /* Header */
         .header {
             background: linear-gradient(135deg, #0f1624 0%, #1a2332 100%);
@@ -114,6 +133,33 @@
             margin: 20px;
         }
 
+        /* Data Source Indicator */
+        .data-source {
+            font-size: 0.75rem;
+            color: #556677;
+            padding: 8px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-source a { color: #4ecdc4; text-decoration: none; }
+        .data-source a:hover { text-decoration: underline; }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: #4ecdc4;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         /* Controls */
         .controls {
             padding: 20px 24px;
@@ -142,6 +188,8 @@
             border-color: #4ecdc4;
             background: rgba(78, 205, 196, 0.05);
         }
+
+        .search-box::placeholder { color: #556677; }
 
         .filter-select {
             padding: 10px 14px;
@@ -179,37 +227,6 @@
         .results-count { font-size: 0.8rem; color: #667788; margin-left: auto; }
         .results-count strong { color: #4ecdc4; }
 
-        /* Data Source Indicator */
-        .data-source {
-            font-size: 0.75rem;
-            color: #556677;
-            padding: 8px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .data-source a {
-            color: #4ecdc4;
-            text-decoration: none;
-        }
-
-        .data-source a:hover { text-decoration: underline; }
-
-        .pulse-dot {
-            width: 6px;
-            height: 6px;
-            background: #4ecdc4;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
         /* Table */
         .table-container { padding: 20px 24px; overflow-x: auto; }
 
@@ -232,7 +249,6 @@
 
         thead th:hover { background: rgba(78, 205, 196, 0.15); }
         thead th .sort-arrow { margin-left: 4px; opacity: 0.4; font-size: 0.7rem; }
-        thead th.sorted .sort-arrow { opacity: 1; color: #4ecdc4; }
 
         tbody tr {
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -262,16 +278,10 @@
         .delta-no { color: #556677; }
 
         .cloud-cell { font-size: 0.78rem; line-height: 1.6; }
-        .cloud-label { font-weight: 600; }
         .cloud-azure { color: #60a5fa; }
         .cloud-snowflake { color: #29b5e8; }
 
-        .notes-cell {
-            font-size: 0.78rem;
-            color: #8899aa;
-            max-width: 250px;
-            line-height: 1.4;
-        }
+        .notes-cell { font-size: 0.78rem; color: #8899aa; max-width: 250px; line-height: 1.4; }
 
         /* Legend */
         .legend {
@@ -287,6 +297,60 @@
 
         .legend-title { font-weight: 600; color: #8899aa; }
         .legend-item { display: flex; align-items: center; gap: 6px; }
+
+        /* Floating Back to Hub Button */
+        .back-to-hub {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(10, 14, 26, 0.92);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 12px;
+            color: #4ecdc4;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .back-to-hub.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .back-to-hub:hover {
+            background: rgba(78, 205, 196, 0.12);
+            border-color: #4ecdc4;
+            box-shadow: 0 8px 32px rgba(78, 205, 196, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .back-to-hub-icon {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .back-to-hub:hover .back-to-hub-icon {
+            transform: translateX(-3px);
+        }
+
+        .back-to-hub-sub {
+            font-size: 0.65rem;
+            color: #667788;
+            margin-top: 2px;
+            font-weight: 400;
+        }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -315,6 +379,13 @@
         </div>
     </nav>
 
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">🏠 Hub</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">ECC → S/4 → CDS → Cloud Lineage</span>
+    </div>
+
     <!-- Header -->
     <div class="header">
         <h1>ECC → S/4 → CDS → <span>Cloud</span> Lineage</h1>
@@ -330,7 +401,7 @@
         </div>
     </div>
 
-    <!-- Data Source Indicator -->
+    <!-- Data Source -->
     <div class="data-source">
         <span class="pulse-dot"></span>
         <span>Data loaded from: <a href="data/ecc-s4-lineage.csv" target="_blank">data/ecc-s4-lineage.csv</a> • Edit in Excel → Save as CSV → Push to Git</span>
@@ -338,7 +409,7 @@
 
     <!-- Controls -->
     <div class="controls">
-        <input type="text" class="search-box" id="searchBox" placeholder="Search ECC table, S/4 table, CDS view, or description...">
+        <input type="text" class="search-box" id="searchBox" placeholder="Search ECC table, S/4 table, CDS view, or description... (Ctrl+K)">
         <select class="filter-select" id="moduleFilter">
             <option value="">All Modules</option>
             <option value="FI">FI - Finance</option>
@@ -381,40 +452,44 @@
         <span class="legend-item"><span class="badge badge-extended">Extended</span> Modified (e.g. field length)</span>
     </div>
 
-    <!-- PapaParse: Lightweight CSV parser (MIT License) -->
-    <!-- You can also download this and put it in /lib/papaparse.min.js -->
+    <!-- Floating Back to Hub Button -->
+    <a href="index.html" class="back-to-hub" id="backToHub">
+        <span class="back-to-hub-icon">←</span>
+        <span>
+            <span class="back-to-hub-text">Back to Hub</span><br>
+            <span class="back-to-hub-sub">Analytics Accelerator Home</span>
+        </span>
+    </a>
+
+    <!-- PapaParse CSV Parser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
     <script>
         // ═══════════════════════════════════════════════════════════════
         // APP STATE
         // ═══════════════════════════════════════════════════════════════
-        let allData = [];          // Full dataset from CSV
-        let filteredData = [];     // Currently displayed (after filters)
-        let sortColumn = 0;
-        let sortDirection = 'asc';
+        let allData = [];
+        let filteredData = [];
+        let currentSortField = '';
+        let currentSortDir = 'asc';
 
         // ═══════════════════════════════════════════════════════════════
-        // LOAD CSV DATA FROM FILE
-        // This fetches the CSV from your repo's /data/ folder
-        // To update data: edit CSV in Excel → save → git push
+        // LOAD CSV DATA
         // ═══════════════════════════════════════════════════════════════
         async function loadData() {
             try {
                 const response = await fetch('data/ecc-s4-lineage.csv');
-
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: Could not load CSV file`);
                 }
 
                 const csvText = await response.text();
 
-                // Parse CSV using PapaParse
                 const parsed = Papa.parse(csvText, {
-                    header: true,           // First row = column headers
-                    skipEmptyLines: true,   // Ignore blank rows
-                    transformHeader: (h) => h.trim(),  // Clean whitespace from headers
-                    transform: (value) => value.trim() // Clean whitespace from values
+                    header: true,
+                    skipEmptyLines: true,
+                    transformHeader: (h) => h.trim(),
+                    transform: (value) => value.trim()
                 });
 
                 if (parsed.errors.length > 0) {
@@ -424,11 +499,8 @@
                 allData = parsed.data;
                 filteredData = [...allData];
 
-                // Render the table
                 renderTable();
                 updateResultsCount();
-
-                // Remove loading state
                 document.getElementById('loadingState').style.display = 'none';
 
             } catch (error) {
@@ -441,9 +513,7 @@
                             Make sure the CSV file exists in your repository's <code>/data/</code> folder.<br>
                             If running locally, use a local server (e.g., <code>npx serve</code> or VS Code Live Server).
                         </p>
-                        <p style="margin-top:16px; font-size:0.8rem; color:#667788;">
-                            Error: ${error.message}
-                        </p>
+                        <p style="margin-top:16px; font-size:0.8rem; color:#667788;">Error: ${error.message}</p>
                     </div>
                 `;
             }
@@ -453,8 +523,7 @@
         // RENDER TABLE
         // ═══════════════════════════════════════════════════════════════
         function renderTable() {
-            // Build table HTML
-            let tableHTML = `
+            let html = `
                 <table>
                     <thead>
                         <tr>
@@ -478,7 +547,7 @@
                 const deltaClass = row.delta === 'Yes' ? 'delta-yes' : 'delta-no';
                 const deltaText = row.delta === 'Yes' ? '✅ Yes' : '— No';
 
-                tableHTML += `
+                html += `
                     <tr>
                         <td><strong>${row.eccTable || ''}</strong></td>
                         <td>${row.description || ''}</td>
@@ -494,11 +563,8 @@
                 `;
             });
 
-            tableHTML += '</tbody></table>';
-
-            // Replace loading state with table
-            const container = document.getElementById('tableContainer');
-            container.innerHTML = tableHTML;
+            html += '</tbody></table>';
+            document.getElementById('tableContainer').innerHTML = html;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -511,7 +577,7 @@
                 'Unchanged': '<span class="badge badge-unchanged">Unchanged</span>',
                 'Extended': '<span class="badge badge-extended">Extended</span>'
             };
-            return badges[type] || `<span class="badge">${type}</span>`;
+            return badges[type] || `<span class="badge">${type || ''}</span>`;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -524,7 +590,6 @@
             const deltaFilter = document.getElementById('deltaFilter').value;
 
             filteredData = allData.filter(row => {
-                // Search across multiple fields
                 const matchesSearch = !searchTerm ||
                     (row.eccTable || '').toLowerCase().includes(searchTerm) ||
                     (row.description || '').toLowerCase().includes(searchTerm) ||
@@ -532,7 +597,6 @@
                     (row.cdsView || '').toLowerCase().includes(searchTerm) ||
                     (row.notes || '').toLowerCase().includes(searchTerm);
 
-                // Dropdown filters
                 const matchesModule = !moduleFilter || row.module === moduleFilter;
                 const matchesChange = !changeFilter || row.changeType === changeFilter;
                 const matchesDelta = !deltaFilter || row.delta === deltaFilter;
@@ -562,9 +626,6 @@
         // ═══════════════════════════════════════════════════════════════
         // SORT
         // ═══════════════════════════════════════════════════════════════
-        let currentSortField = '';
-        let currentSortDir = 'asc';
-
         function sortTable(field) {
             if (currentSortField === field) {
                 currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
@@ -585,8 +646,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // EXPORT TO CSV
-        // Downloads the currently filtered view as a CSV file
+        // EXPORT CSV
         // ═══════════════════════════════════════════════════════════════
         function exportCSV() {
             if (filteredData.length === 0) {
@@ -594,10 +654,7 @@
                 return;
             }
 
-            // Use PapaParse to generate CSV from current filtered data
             const csv = Papa.unparse(filteredData);
-
-            // Create download
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
@@ -622,13 +679,3 @@
             if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT')) {
                 e.preventDefault();
                 document.getElementById('searchBox').focus();
-            }
-        });
-
-        // ═══════════════════════════════════════════════════════════════
-        // INITIALIZE: Load data when page opens
-        // ═══════════════════════════════════════════════════════════════
-        loadData();
-    </script>
-</body>
-</html>
