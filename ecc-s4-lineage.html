@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECC → S/4 → CDS → Cloud Lineage | Analytics Accelerator Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: rgba(10, 14, 26, 0.95);
+            border-bottom: 1px solid rgba(78, 205, 196, 0.15);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .nav-brand-icon { font-size: 1.4rem; }
+        .nav-brand-text { font-weight: 600; font-size: 0.95rem; }
+        .nav-brand-sub { color: #4ecdc4; font-size: 0.75rem; font-weight: 400; }
+
+        .nav-links { display: flex; gap: 8px; }
+
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #8899aa;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover { background: rgba(78, 205, 196, 0.1); color: #ffffff; }
+        .nav-link.active { background: rgba(78, 205, 196, 0.15); color: #4ecdc4; }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0f1624 0%, #1a2332 100%);
+            padding: 40px 24px 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(78, 205, 196, 0.1);
+        }
+
+        .header h1 { font-size: 1.8rem; margin-bottom: 8px; color: #ffffff; }
+        .header h1 span { color: #4ecdc4; }
+        .header p { color: #667788; font-size: 0.95rem; max-width: 700px; margin: 0 auto; }
+
+        .flow-mini {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 20px;
+            font-size: 0.8rem;
+        }
+
+        .flow-mini-node {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            padding: 6px 14px;
+            border-radius: 6px;
+            color: #4ecdc4;
+            font-weight: 500;
+        }
+
+        .flow-mini-arrow { color: #4ecdc4; opacity: 0.5; }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #667788;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(78, 205, 196, 0.2);
+            border-top-color: #4ecdc4;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            text-align: center;
+            padding: 40px;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: 12px;
+            margin: 20px;
+        }
+
+        /* Controls */
+        .controls {
+            padding: 20px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            background: rgba(15, 22, 36, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.05);
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .filter-select option { background: #1a2332; color: #ffffff; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-export { background: linear-gradient(135deg, #4ecdc4, #44a08d); color: #000; }
+        .btn-export:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3); }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.06);
+            color: #8899aa;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-reset:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+
+        .results-count { font-size: 0.8rem; color: #667788; margin-left: auto; }
+        .results-count strong { color: #4ecdc4; }
+
+        /* Data Source Indicator */
+        .data-source {
+            font-size: 0.75rem;
+            color: #556677;
+            padding: 8px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-source a {
+            color: #4ecdc4;
+            text-decoration: none;
+        }
+
+        .data-source a:hover { text-decoration: underline; }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: #4ecdc4;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Table */
+        .table-container { padding: 20px 24px; overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 1400px; }
+
+        thead th {
+            background: rgba(78, 205, 196, 0.08);
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            color: #4ecdc4;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.2);
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+            position: sticky;
+            top: 56px;
+            z-index: 10;
+        }
+
+        thead th:hover { background: rgba(78, 205, 196, 0.15); }
+        thead th .sort-arrow { margin-left: 4px; opacity: 0.4; font-size: 0.7rem; }
+        thead th.sorted .sort-arrow { opacity: 1; color: #4ecdc4; }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover { background: rgba(78, 205, 196, 0.04); }
+        tbody td { padding: 11px 10px; vertical-align: middle; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-merged { background: rgba(255, 107, 107, 0.15); color: #ff6b6b; border: 1px solid rgba(255, 107, 107, 0.3); }
+        .badge-deprecated { background: rgba(255, 159, 67, 0.15); color: #ff9f43; border: 1px solid rgba(255, 159, 67, 0.3); }
+        .badge-unchanged { background: rgba(78, 205, 196, 0.15); color: #4ecdc4; border: 1px solid rgba(78, 205, 196, 0.3); }
+        .badge-extended { background: rgba(155, 89, 182, 0.15); color: #b39ddb; border: 1px solid rgba(155, 89, 182, 0.3); }
+        .badge-module { background: rgba(255, 255, 255, 0.06); color: #aabbcc; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        .delta-yes { color: #4ecdc4; font-weight: 600; }
+        .delta-no { color: #556677; }
+
+        .cloud-cell { font-size: 0.78rem; line-height: 1.6; }
+        .cloud-label { font-weight: 600; }
+        .cloud-azure { color: #60a5fa; }
+        .cloud-snowflake { color: #29b5e8; }
+
+        .notes-cell {
+            font-size: 0.78rem;
+            color: #8899aa;
+            max-width: 250px;
+            line-height: 1.4;
+        }
+
+        /* Legend */
+        .legend {
+            padding: 16px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.78rem;
+            color: #667788;
+        }
+
+        .legend-title { font-weight: 600; color: #8899aa; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .controls { flex-direction: column; }
+            .search-box { min-width: 100%; }
+            .results-count { margin-left: 0; margin-top: 8px; }
+            .flow-mini { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-brand">
+            <span class="nav-brand-icon">📊</span>
+            <span>
+                <span class="nav-brand-text">Analytics Accelerator Hub</span><br>
+                <span class="nav-brand-sub">Brownfield Migration Toolkit</span>
+            </span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">🏠 Hub</a>
+            <a href="ecc-s4-lineage.html" class="nav-link active">🔄 Lineage</a>
+            <a href="cds-reference.html" class="nav-link">📊 CDS Views</a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>ECC → S/4 → CDS → <span>Cloud</span> Lineage</h1>
+        <p>Trace any ECC table through S/4HANA conversion to its CDS extraction view, with recommended landing patterns for Azure Data Lake and Snowflake.</p>
+        <div class="flow-mini">
+            <span class="flow-mini-node">ECC Table</span>
+            <span class="flow-mini-arrow">→</span>
+            <span class="flow-mini-node">S/4 Table</span>
+            <span class="flow-mini-arrow">→</span>
+            <span class="flow-mini-node">CDS View</span>
+            <span class="flow-mini-arrow">→</span>
+            <span class="flow-mini-node">Azure / Snowflake</span>
+        </div>
+    </div>
+
+    <!-- Data Source Indicator -->
+    <div class="data-source">
+        <span class="pulse-dot"></span>
+        <span>Data loaded from: <a href="data/ecc-s4-lineage.csv" target="_blank">data/ecc-s4-lineage.csv</a> • Edit in Excel → Save as CSV → Push to Git</span>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <input type="text" class="search-box" id="searchBox" placeholder="Search ECC table, S/4 table, CDS view, or description...">
+        <select class="filter-select" id="moduleFilter">
+            <option value="">All Modules</option>
+            <option value="FI">FI - Finance</option>
+            <option value="CO">CO - Controlling</option>
+            <option value="SD">SD - Sales & Distribution</option>
+            <option value="MM">MM - Materials Management</option>
+            <option value="PP">PP - Production Planning</option>
+        </select>
+        <select class="filter-select" id="changeFilter">
+            <option value="">All Change Types</option>
+            <option value="Merged">Merged</option>
+            <option value="Deprecated">Deprecated</option>
+            <option value="Unchanged">Unchanged</option>
+            <option value="Extended">Extended</option>
+        </select>
+        <select class="filter-select" id="deltaFilter">
+            <option value="">All Delta Status</option>
+            <option value="Yes">Delta Enabled</option>
+            <option value="No">Full Load Only</option>
+        </select>
+        <button class="btn btn-reset" onclick="resetFilters()">Reset</button>
+        <button class="btn btn-export" onclick="exportCSV()">📥 Export CSV</button>
+        <div class="results-count" id="resultsCount">Loading...</div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container" id="tableContainer">
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Loading lineage data from CSV...</p>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+        <span class="legend-title">Change Types:</span>
+        <span class="legend-item"><span class="badge badge-merged">Merged</span> Consolidated into another table</span>
+        <span class="legend-item"><span class="badge badge-deprecated">Deprecated</span> Replaced entirely</span>
+        <span class="legend-item"><span class="badge badge-unchanged">Unchanged</span> Same structure in S/4</span>
+        <span class="legend-item"><span class="badge badge-extended">Extended</span> Modified (e.g. field length)</span>
+    </div>
+
+    <!-- PapaParse: Lightweight CSV parser (MIT License) -->
+    <!-- You can also download this and put it in /lib/papaparse.min.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // APP STATE
+        // ═══════════════════════════════════════════════════════════════
+        let allData = [];          // Full dataset from CSV
+        let filteredData = [];     // Currently displayed (after filters)
+        let sortColumn = 0;
+        let sortDirection = 'asc';
+
+        // ═══════════════════════════════════════════════════════════════
+        // LOAD CSV DATA FROM FILE
+        // This fetches the CSV from your repo's /data/ folder
+        // To update data: edit CSV in Excel → save → git push
+        // ═══════════════════════════════════════════════════════════════
+        async function loadData() {
+            try {
+                const response = await fetch('data/ecc-s4-lineage.csv');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: Could not load CSV file`);
+                }
+
+                const csvText = await response.text();
+
+                // Parse CSV using PapaParse
+                const parsed = Papa.parse(csvText, {
+                    header: true,           // First row = column headers
+                    skipEmptyLines: true,   // Ignore blank rows
+                    transformHeader: (h) => h.trim(),  // Clean whitespace from headers
+                    transform: (value) => value.trim() // Clean whitespace from values
+                });
+
+                if (parsed.errors.length > 0) {
+                    console.warn('CSV parse warnings:', parsed.errors);
+                }
+
+                allData = parsed.data;
+                filteredData = [...allData];
+
+                // Render the table
+                renderTable();
+                updateResultsCount();
+
+                // Remove loading state
+                document.getElementById('loadingState').style.display = 'none';
+
+            } catch (error) {
+                console.error('Failed to load CSV:', error);
+                document.getElementById('tableContainer').innerHTML = `
+                    <div class="error-msg">
+                        <h3>⚠️ Could not load data file</h3>
+                        <p style="margin-top:12px; color:#aaa;">
+                            Expected file at: <code>data/ecc-s4-lineage.csv</code><br><br>
+                            Make sure the CSV file exists in your repository's <code>/data/</code> folder.<br>
+                            If running locally, use a local server (e.g., <code>npx serve</code> or VS Code Live Server).
+                        </p>
+                        <p style="margin-top:16px; font-size:0.8rem; color:#667788;">
+                            Error: ${error.message}
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // RENDER TABLE
+        // ═══════════════════════════════════════════════════════════════
+        function renderTable() {
+            // Build table HTML
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('eccTable')">ECC Table <span class="sort-arrow">↕</span></th>
+                            <th onclick="sortTable('description')">Description <span class="sort-arrow">↕</span></th>
+                            <th onclick="sortTable('module')">Module <span class="sort-arrow">↕</span></th>
+                            <th onclick="sortTable('changeType')">Change Type <span class="sort-arrow">↕</span></th>
+                            <th onclick="sortTable('s4Table')">S/4HANA Table <span class="sort-arrow">↕</span></th>
+                            <th onclick="sortTable('cdsView')">CDS View <span class="sort-arrow">↕</span></th>
+                            <th onclick="sortTable('delta')">Delta <span class="sort-arrow">↕</span></th>
+                            <th>Azure Data Lake Pattern</th>
+                            <th>Snowflake Pattern</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            filteredData.forEach(row => {
+                const changeBadge = getChangeBadge(row.changeType);
+                const deltaClass = row.delta === 'Yes' ? 'delta-yes' : 'delta-no';
+                const deltaText = row.delta === 'Yes' ? '✅ Yes' : '— No';
+
+                tableHTML += `
+                    <tr>
+                        <td><strong>${row.eccTable || ''}</strong></td>
+                        <td>${row.description || ''}</td>
+                        <td><span class="badge badge-module">${row.module || ''}</span></td>
+                        <td>${changeBadge}</td>
+                        <td><strong>${row.s4Table || ''}</strong></td>
+                        <td><code style="color:#4ecdc4; font-size:0.8rem;">${row.cdsView || ''}</code></td>
+                        <td><span class="${deltaClass}">${deltaText}</span></td>
+                        <td class="cloud-cell"><span class="cloud-azure">${row.azurePattern || ''}</span></td>
+                        <td class="cloud-cell"><span class="cloud-snowflake">${row.snowflakePattern || ''}</span></td>
+                        <td class="notes-cell">${row.notes || ''}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+
+            // Replace loading state with table
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = tableHTML;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // BADGE HELPER
+        // ═══════════════════════════════════════════════════════════════
+        function getChangeBadge(type) {
+            const badges = {
+                'Merged': '<span class="badge badge-merged">Merged</span>',
+                'Deprecated': '<span class="badge badge-deprecated">Deprecated</span>',
+                'Unchanged': '<span class="badge badge-unchanged">Unchanged</span>',
+                'Extended': '<span class="badge badge-extended">Extended</span>'
+            };
+            return badges[type] || `<span class="badge">${type}</span>`;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // FILTER & SEARCH
+        // ═══════════════════════════════════════════════════════════════
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const moduleFilter = document.getElementById('moduleFilter').value;
+            const changeFilter = document.getElementById('changeFilter').value;
+            const deltaFilter = document.getElementById('deltaFilter').value;
+
+            filteredData = allData.filter(row => {
+                // Search across multiple fields
+                const matchesSearch = !searchTerm ||
+                    (row.eccTable || '').toLowerCase().includes(searchTerm) ||
+                    (row.description || '').toLowerCase().includes(searchTerm) ||
+                    (row.s4Table || '').toLowerCase().includes(searchTerm) ||
+                    (row.cdsView || '').toLowerCase().includes(searchTerm) ||
+                    (row.notes || '').toLowerCase().includes(searchTerm);
+
+                // Dropdown filters
+                const matchesModule = !moduleFilter || row.module === moduleFilter;
+                const matchesChange = !changeFilter || row.changeType === changeFilter;
+                const matchesDelta = !deltaFilter || row.delta === deltaFilter;
+
+                return matchesSearch && matchesModule && matchesChange && matchesDelta;
+            });
+
+            renderTable();
+            updateResultsCount();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchBox').value = '';
+            document.getElementById('moduleFilter').value = '';
+            document.getElementById('changeFilter').value = '';
+            document.getElementById('deltaFilter').value = '';
+            filteredData = [...allData];
+            renderTable();
+            updateResultsCount();
+        }
+
+        function updateResultsCount() {
+            document.getElementById('resultsCount').innerHTML =
+                `Showing <strong>${filteredData.length}</strong> of <strong>${allData.length}</strong> mappings`;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // SORT
+        // ═══════════════════════════════════════════════════════════════
+        let currentSortField = '';
+        let currentSortDir = 'asc';
+
+        function sortTable(field) {
+            if (currentSortField === field) {
+                currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortField = field;
+                currentSortDir = 'asc';
+            }
+
+            filteredData.sort((a, b) => {
+                const valA = (a[field] || '').toLowerCase();
+                const valB = (b[field] || '').toLowerCase();
+                if (valA < valB) return currentSortDir === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSortDir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderTable();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // EXPORT TO CSV
+        // Downloads the currently filtered view as a CSV file
+        // ═══════════════════════════════════════════════════════════════
+        function exportCSV() {
+            if (filteredData.length === 0) {
+                alert('No data to export. Adjust your filters.');
+                return;
+            }
+
+            // Use PapaParse to generate CSV from current filtered data
+            const csv = Papa.unparse(filteredData);
+
+            // Create download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `ecc-s4-lineage-export-${new Date().toISOString().slice(0, 10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // EVENT LISTENERS
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('searchBox').addEventListener('input', applyFilters);
+        document.getElementById('moduleFilter').addEventListener('change', applyFilters);
+        document.getElementById('changeFilter').addEventListener('change', applyFilters);
+        document.getElementById('deltaFilter').addEventListener('change', applyFilters);
+
+        // Keyboard shortcut: Ctrl+K or / to focus search
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT')) {
+                e.preventDefault();
+                document.getElementById('searchBox').focus();
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // INITIALIZE: Load data when page opens
+        // ═══════════════════════════════════════════════════════════════
+        loadData();
+    </script>
+</body>
+</html>
